@@ -1,0 +1,37 @@
+{
+  "config": {
+    "ENV": {
+      "APP_HOST": "http://localhost",
+      "ASTRO_HOST": "http://localhost",
+      "WEBHOOK_HOST": "http://localhost:8082",
+      "PORT": "8000"
+    },
+    "DATABASE": {
+      "TYPE": "mongodb",
+      "URL": "mongodb://127.0.0.1:27017/",
+      "PORT": 27017,
+      "DBNAME": "astro_app",
+      "MONGO_AUTHENTICATION_ENABLED": false
+    },
+    "DEBUG_MONGOOSE": true,
+    "REDIS": {
+      "HOST": "localhost",
+      "PORT": 6379,
+      "PASSWORD": "redis",
+      "SSL_ENABLED": false
+    },
+    "KAFKA": {
+      "HOST": "localhost",
+      "USER": "kafka",
+      "PASSWORD": "kafka",
+      "PORT": 5672
+    },
+    "SMTP": {
+      "HOST": "email-server",
+      "PORT": 587,
+      "USERNAME": "email-server-username",
+      "PASSWORD": "email-server-password",
+      "EMAIL_FROM": "support@yourapp.com"
+    }
+  }
+}
