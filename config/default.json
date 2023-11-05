@@ -32,6 +32,11 @@
       "USERNAME": "email-server-username",
       "PASSWORD": "email-server-password",
       "EMAIL_FROM": "support@yourapp.com"
+    },
+    "TWILIO": {
+      "ACCOUNT_SID": "AC6071fa35ed07483445523a1488db6b5f",
+      "AUTH_TOKEN": "f14948ff0f72a25d4d3b7a9199c393c5",
+      "MOB_NUMBER": "+12762855247"
     }
   }
 }
