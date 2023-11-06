@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const {Schema} = mongoose;
-const utils = require('../src/utils/utils');
+const utils = require('../utils/utils');
 const {toJSON, paginate} = require('./plugins');
 
 const userSchema = new Schema({
@@ -33,16 +33,17 @@ const userSchema = new Schema({
 			trim: true,
 			unique: true,
 		},
-		required: true,
 	},
-	phoneOtp: {
+	hashedOtp: {
 		type: String,
-		maxlength: 4,
-		minlength: 4,
 	},
 	isActive: {
 		type: Boolean,
 		default: true,
+	},
+	isOtpVerified: {
+		type: Boolean,
+		default: false,
 	},
 	description: {
 		type: String,

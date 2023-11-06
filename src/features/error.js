@@ -1,12 +1,10 @@
 const _ = require('lodash');
 const httpStatus = require('http-status');
-const logger = require('./logger_module/winston-logger');
+const logger = require('./logger');
 
 const mongoose = require('mongoose');
-const config = require('config');
+const config = require('../../config/config');
 const {v4: uuidv4} = require('uuid');
-
-const configEnv = config.get('config.env');
 
 class ApiError extends Error {
 	constructor(statusCode, message, isOperational = true, stack = '') {
@@ -25,7 +23,6 @@ class ApiError extends Error {
 
 function errorConverter(err, req, res, next) {
 	let error = err;
-
 	if (!(error instanceof ApiError)) {
 		const statusCode
       = error.statusCode || (error instanceof mongoose.Error ? httpStatus.BAD_REQUEST : httpStatus.FORBIDDEN);
@@ -54,7 +51,7 @@ function errorHandler(err, req, res, next) {
 	}
 
 	res.locals.errorMessage = err.message.trim();
-	const isDevEnv = ['development', 'uat'].includes(configEnv.env);
+	const isDevEnv = ['development', 'uat'].includes(config.env.environment);
 	// eslint-disable-next-line no-control-regex
 	const sanitizedMessage = message.replace(/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]/g, ' ');
 	const response = {
@@ -68,7 +65,7 @@ function errorHandler(err, req, res, next) {
 		success: false,
 	};
 
-	logger.error('Error while processing http request:', err);
+	logger.error('Error while processing http request:', response);
 	res.status(statusCode).send(response);
 }
 

@@ -4,7 +4,8 @@
       "APP_HOST": "http://localhost",
       "ASTRO_HOST": "http://localhost",
       "WEBHOOK_HOST": "http://localhost:8082",
-      "PORT": "8000"
+      "PORT": "8000",
+      "ENVIRONMENT": "development"
     },
     "DATABASE": {
       "TYPE": "mongodb",
@@ -34,9 +35,16 @@
       "EMAIL_FROM": "support@yourapp.com"
     },
     "TWILIO": {
-      "ACCOUNT_SID": "AC6071fa35ed07483445523a1488db6b5f",
-      "AUTH_TOKEN": "f14948ff0f72a25d4d3b7a9199c393c5",
-      "MOB_NUMBER": "+12762855247"
+      "ACCOUNT_SID": "AC31dff186ad3312bbde03bcf9eb18da26",
+      "AUTH_TOKEN": "2fe520712449d4eb37941d1d403fc977",
+      "MOB_NUMBER": "+19293050506"
+    },
+    "AUTHENTICATION": {
+      "OTP_LENGTH": 4,
+      "SALT_RANDOM": 10,
+      "REFRESH_TOKEN_EXPIRATION": "30d",
+      "JWT_TOKEN_EXPIRATION": "86000s",
+      "TOKEN_ALGORITHM": "HS256"
     }
   }
 }

@@ -1,11 +1,30 @@
+
+process.env.ALLOW_CONFIG_MUTATIONS = 'true';
 /* eslint-disable camelcase */
 const config = require('config');
 const dotenv = require('dotenv');
 const Joi = require('joi');
+const {generateRefreshTokenSecretKey, generateRandomString} = require('../src/utils/utils');
 
 dotenv.config();
 
 const configEnv = config.get('config');
+
+if (!configEnv.AUTHENTICATION.REFRESH_TOKEN_SECRET_KEY) {
+	configEnv.AUTHENTICATION.REFRESH_TOKEN_SECRET_KEY = generateRefreshTokenSecretKey();
+}
+
+if (!configEnv.AUTHENTICATION.REFRESH_TOKEN_ISSUER) {
+	configEnv.AUTHENTICATION.REFRESH_TOKEN_ISSUER = generateRefreshTokenSecretKey();
+}
+
+if (!configEnv.AUTHENTICATION.JWT_TOKEN_ISSUER) {
+	configEnv.AUTHENTICATION.JWT_TOKEN_ISSUER = generateRandomString(12);
+}
+
+if (!configEnv.AUTHENTICATION.JWT_TOKEN_SECRET_KEY) {
+	configEnv.AUTHENTICATION.JWT_TOKEN_SECRET_KEY = generateRefreshTokenSecretKey();
+}
 
 const envVarsSchema = Joi.object({
 	ENV: Joi.object({
@@ -13,6 +32,7 @@ const envVarsSchema = Joi.object({
 		ASTRO_HOST: Joi.string().required().description('The Astro host URL'),
 		WEBHOOK_HOST: Joi.string().required().description('The webhook host URL'),
 		PORT: Joi.string().required().description('The application port'),
+		ENVIRONMENT: Joi.string().required().description('The environment of the app'),
 	}).description('Environments setting'),
 	DATABASE: Joi.object({
 		TYPE: Joi.string().required().description('The type of database (e.g., mongodb)'),
@@ -46,6 +66,17 @@ const envVarsSchema = Joi.object({
 		AUTH_TOKEN: Joi.string().required().description('auth token of twilio user'),
 		MOB_NUMBER: Joi.string().required().description('mobile number of sender'),
 	}).description('Twilio settings'),
+	AUTHENTICATION: Joi.object({
+		OTP_LENGTH: Joi.number().required().description('length of otp of the number'),
+		SALT_RANDOM: Joi.number().required().description('salted random number'),
+		REFRESH_TOKEN_SECRET_KEY: Joi.string().required().description('refresh token secret key'),
+		REFRESH_TOKEN_ISSUER: Joi.string().required().description('refresh token issuer'),
+		JWT_TOKEN_ISSUER: Joi.string().required().description('jwt token issuer'),
+		JWT_TOKEN_SECRET_KEY: Joi.string().required().description('jwt token secret key'),
+		REFRESH_TOKEN_EXPIRATION: Joi.string().required().description('refresh token expiration'),
+		JWT_TOKEN_EXPIRATION: Joi.string().required().description('jwt token expiration'),
+		TOKEN_ALGORITHM: Joi.string().required().description('token algorithm'),
+	}).description('authentication settings'),
 }).unknown(true);
 
 const {error, value: envVars} = envVarsSchema.validate(configEnv);
@@ -60,6 +91,7 @@ const configuration = {
 		astro_host: process.env.ASTRO_HOST || envVars.ASTRO_HOST,
 		webhook_host: process.env.WEBHOOK_HOST || envVars.WEBHOOK_HOST,
 		port: process.env.PORT || envVars.PORT,
+		environment: process.env.ENVIRONMENT || envVars.ENVIRONMENT,
 	},
 	database: {
 		type: process.env.DATABASE_TYPE || envVars.DATABASE.TYPE,
@@ -92,6 +124,17 @@ const configuration = {
 		account_sid: process.env.ACCOUNT_SID || envVars.TWILIO.ACCOUNT_SID,
 		auth_token: process.env.AUTH_TOKEN || envVars.TWILIO.AUTH_TOKEN,
 		mob_number: process.env.MOB_NUMBER || envVars.TWILIO.MOB_NUMBER,
+	},
+	authentication: {
+		otp_length: process.env.OTP_LENGTH || envVars.AUTHENTICATION.OTP_LENGTH,
+		salt: process.env.SALT_RANDOM || envVars.AUTHENTICATION.SALT_RANDOM,
+		refresh_token_secret_key: process.env.REFRESH_TOKEN_SECRET_KEY || envVars.AUTHENTICATION.REFRESH_TOKEN_SECRET_KEY,
+		refresh_token_issuer: process.env.REFRESH_TOKEN_ISSUER || envVars.AUTHENTICATION.REFRESH_TOKEN_ISSUER,
+		jwt_token_issuer: process.env.JWT_TOKEN_ISSUER || envVars.AUTHENTICATION.JWT_TOKEN_ISSUER,
+		jwt_token_secret_key: process.env.JWT_TOKEN_SECRET_KEY || envVars.AUTHENTICATION.JWT_TOKEN_SECRET_KEY,
+		jwt_token_expiration: process.env.JWT_TOKEN_EXPIRATION || envVars.AUTHENTICATION.JWT_TOKEN_EXPIRATION,
+		refresh_token_expiration: process.env.REFRESH_TOKEN_EXPIRATION || envVars.AUTHENTICATION.REFRESH_TOKEN_EXPIRATION,
+		token_algortihm: process.env.TOKEN_ALGORITHM || envVars.AUTHENTICATION.TOKEN_ALGORITHM,
 	},
 };
 

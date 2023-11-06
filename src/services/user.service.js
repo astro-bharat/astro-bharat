@@ -1,15 +1,14 @@
 /* eslint-disable no-useless-catch */
 // Import the User model
-import User, {findById, findByIdAndUpdate, findByIdAndDelete, find, findOne} from '../../models';
-import AuthService from './auth.service';
-
-const authService = new AuthService();
+const User = require('../models/user.model');
+const AuthService = require('../services/auth.service');
+const utils = require('../utils/utils');
 class UserService {
 	// Create a new user
 	async createUser(userData) {
 		try {
 			const user = new User(userData);
-			await authService.sendOtpMessage(userData);
+			await AuthService.sendOtpMessage(userData);
 			return await user.save();
 		} catch (error) {
 			throw error;
@@ -19,7 +18,7 @@ class UserService {
 	// Retrieve a user by ID
 	async getUserById(userId) {
 		try {
-			return await findById(userId);
+			return await User.findById(userId);
 		} catch (error) {
 			throw error;
 		}
@@ -27,7 +26,7 @@ class UserService {
 
 	async getUserByMobNumber(mobNumber) {
 		try {
-			return await findOne({mobNumber});
+			return await User.findOne({mobNumber});
 		} catch (error) {
 			throw error;
 		}
@@ -36,7 +35,40 @@ class UserService {
 	// Update user information
 	async updateUser(userId, userData) {
 		try {
-			return await findByIdAndUpdate(userId, userData, {new: true});
+			const options = {new: true, upsert: true};
+			return await User.updateOne({_id: userId}, userData, options);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async updateByMobNumber(mobNumber, userData) {
+		try {
+			// Check if the document with mobNumber exists in the database
+			const existingUser = await User.findOne({mobNumber});
+
+			// If an existing document is found, use its _id
+			if (existingUser) {
+				userData._id = existingUser._id;
+			} else {
+				// If no existing document is found, generate a new _id
+				userData._id = await utils.uuid('u-');
+			}
+
+			const options = {new: true, upsert: true};
+			const filter = {mobNumber};
+			const update = {
+				$set: userData,
+			};
+
+			// Use findOneAndUpdate to get the updated document
+			const updatedUser = await User.findOneAndUpdate(filter, update, options);
+
+			if (updatedUser) {
+				return updatedUser;
+			}
+
+			throw new Error('Failed to update or upsert user data');
 		} catch (error) {
 			throw error;
 		}
@@ -45,7 +77,7 @@ class UserService {
 	// Delete a user by ID
 	async deleteUser(userId) {
 		try {
-			return await findByIdAndDelete(userId);
+			return await User.findByIdAndDelete(userId);
 		} catch (error) {
 			throw error;
 		}
@@ -54,11 +86,11 @@ class UserService {
 	// Retrieve a list of all users
 	async getAllUsers() {
 		try {
-			return await find();
+			return await User.find();
 		} catch (error) {
 			throw error;
 		}
 	}
 }
 
-export default UserService;
+module.exports = new UserService();
