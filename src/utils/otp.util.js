@@ -11,29 +11,29 @@ const accountSid = account_sid.trim();
 const client = new Twilio(accountSid, authToken);
 
 const generateOTP = () => {
-	// Declare a digits variable
-	const OTP = otpGenerator.generate(config.authentication.otp_length, {digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
-	return OTP;
+    // Declare a digits variable
+    const OTP = otpGenerator.generate(config.authentication.otp_length, {digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
+    return OTP;
 };
 
 const sendSms = async ({message, contactNumber}) => {
-	// eslint-disable-next-line no-useless-catch
-	try {
-		logger.info(`Receiver number is: ${contactNumber}`);
-		const res = await client.messages
-			.create({
-				from: sender,
-				to: contactNumber,
-				body: message,
-			});
-		logger.info(`result of send sms: ${res}`);
-		return res;
-	} catch (error) {
-		throw error;
-	}
+    // eslint-disable-next-line no-useless-catch
+    try {
+        logger.info(`Receiver number is: ${contactNumber}`);
+        const res = await client.messages
+            .create({
+                from: sender,
+                to: contactNumber,
+                body: message,
+            });
+        logger.info(`result of send sms: ${res}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
-	sendSms,
-	generateOTP,
+    sendSms,
+    generateOTP,
 };
