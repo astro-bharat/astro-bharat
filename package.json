@@ -19,6 +19,7 @@
     "http-errors": "~1.6.3",
     "http-status": "^1.7.3",
     "i18n": "^0.15.1",
+    "ioredis": "^5.3.2",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "mocha": "^10.2.0",
