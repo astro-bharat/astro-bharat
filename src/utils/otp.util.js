@@ -1,34 +1,39 @@
-const config = require('../config/config');
+/* eslint-disable camelcase */
+const config = require('../../config/config');
 const logger = require('../features/logger');
-const {account_sid: accountSid, auth_token: authToken, mob_number: sender} = config.twilio;
-const twilio = require('twilio')(accountSid, authToken);
+const otpGenerator = require('otp-generator');
+const Twilio = require('twilio');
 
-const generateOTP = otpLength => {
-	// Declare a digits variable
-	// which stores all digits
-	const digits = '0123456789';
-	let OTP = '';
-	for (let i = 0; i < otpLength; i++) {
-		OTP += digits[Math.floor(Math.random() * 10)];
-	}
+const {account_sid, auth_token, mob_number: sender} = config.twilio;
+const authToken = auth_token.trim();
+const accountSid = account_sid.trim();
 
-	return OTP;
+const client = new Twilio(accountSid, authToken);
+
+const generateOTP = () => {
+    // Declare a digits variable
+    const OTP = otpGenerator.generate(config.authentication.otp_length, {digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
+    return OTP;
 };
 
-const sendSms = async ({message, contactNumber}, next) => {
-	try {
-		const res = await twilio.messages.create({
-			from: sender,
-			to: contactNumber,
-			body: message,
-		}).then(_res => logger.info('otp messages has sent'));
-		logger.info(`result of send sms: ${res}`);
-	} catch (error) {
-		next(error);
-	}
+const sendSms = async ({message, contactNumber}) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+        logger.info(`Receiver number is: ${contactNumber}`);
+        const res = await client.messages
+            .create({
+                from: sender,
+                to: contactNumber,
+                body: message,
+            });
+        logger.info(`result of send sms: ${res}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
-	sendSms,
-	generateOTP,
+    sendSms,
+    generateOTP,
 };
