@@ -1,15 +1,3 @@
-const crypto = require('crypto');
-
-function generateRefreshTokenSecretKey() {
-    const byteLength = 32; // Adjust the length as needed
-    return crypto.randomBytes(byteLength).toString('base64');
-}
-
-function generateRandomString(length) {
-    return crypto.randomBytes(Math.ceil(length / 2))
-        .toString('hex')
-        .slice(0, length);
-}
 
 /* eslint-disable no-mixed-spaces-and-tabs */
 const uuid = prefix => (
@@ -33,6 +21,4 @@ const pick = (object, keys) => keys.reduce((obj, key) => {
 module.exports = {
     uuid,
     pick,
-    generateRefreshTokenSecretKey,
-    generateRandomString,
 };
