@@ -12,13 +12,13 @@ EXPOSE 3000
 CMD ["node", "src/bin/www"]
 
 # For building Docker image
-# docker build -t astro-bharat .
+# docker build -t bus-ticketing-backend.
 
 # TO start docker container
-# docker run -p 3000:3000 astro-bharat
+# docker run -p 3000:3000 bus-ticketing-backend
 
 # To stop docker container
-# docker stop astro-bharat
+# docker stop bus-ticketing-backend
 
 # To remove Docker image
-# docker rmi astro-bharat
+# docker rmi bus-ticketing-backend

@@ -1,5 +1,5 @@
 {
-  "name": "astro-bharat",
+  "name": "bus-ticketing-backend",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -24,6 +24,7 @@
     "mocha": "^10.2.0",
     "mongoose": "^7.6.3",
     "morgan": "~1.9.1",
+    "node-rdkafka": "^2.18.0",
     "nodemon": "^3.0.1",
     "otp-generator": "^4.0.1",
     "passport": "^0.6.0",
